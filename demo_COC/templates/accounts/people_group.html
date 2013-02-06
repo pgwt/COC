@@ -1,0 +1,33 @@
+{%extends "accounts/people.html"%}
+{%block tab%}
+<li>
+	<a href="../feeds/">动态</a>
+</li>
+<li>
+	<a href="../profile/">资料</a>
+</li>
+<li>
+	<a href="../corporation/">社团</a>
+</li>
+<li class="active">
+	<a href="../group/">小组</a>
+</li>
+{%endblock%}
+{%block content%}
+{%if student.get_sgcard%}
+<div class="media">
+	{%for sgcard in student.get_sgcard%}
+	<div class="span6 media">
+		<hr>
+		<a class="pull-left span1" href="/group/{{sgcard.group.url_number}}/"> <img class="media-object" src="{{sgcard.group.logo}}"> </a>
+		<div class="media-body">
+			<h4 class="media-heading">{{sgcard.group.name}}</h4>
+			创建于{{sgcard.group.birthday}}
+		</div>
+	</div>
+	{%endfor%}
+</div>
+{%else%}
+<h2>他还没有加入小组</h2>
+{%endif%}
+{%endblock%}

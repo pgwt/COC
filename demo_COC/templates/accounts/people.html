@@ -1,0 +1,127 @@
+{%extends 'accounts/accounts_base.html'%}
+{%block title%}{{student}}的首页{%endblock%}
+
+{%block leftspan6%}
+<h3>{{student.public_profile.realname}}<small>来自xxx学校</small></h3>
+<hr>
+<ul class="nav nav-tabs" id="myTab">
+	{%block tab%}
+
+	{%endblock%}
+</ul>
+
+{%block content%}
+{%endblock%}
+
+{%endblock%}
+
+{%block rightspan3%}
+<div class="row">
+	<div class="span3">
+		<div class="thumbnail">
+			<img src="{{student.public_profile.face}}">
+			<div id="outer">
+				<div id="watch_button">
+					{%ifnotequal student current_user%}
+					&nbsp;
+					{%endifnotequal%}
+					{%if student in current_user.get_sscard.watched_students%}
+
+					<button class="btn btn-block btn-danger" id="cancle_watch">
+						取消关注
+					</button>
+					{%else%}
+
+					{%ifnotequal student current_user%}
+					<button class="btn btn-block btn-success" id="watch">
+						关注
+					</button>
+
+					{%endifnotequal%}
+					{%endif%}
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	<div class="span3">
+		<hr>
+		<p align="center">
+			-----关注的人------
+		</p>
+		{%if student.get_sscard.watched_students%}
+		<ul class="thumbnails">
+			{%for wstudent in student.get_sscard.watched_students%}
+			<li class="span1">
+				<a class="thumbnail" href="/people/{{wstudent.url_number}}/"> <img src="{{wstudent.public_profile.face}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			他还没有关注其他人
+		</p>
+		{%endif%}
+		<hr>
+		<p align="center">
+			-----加入的小队------
+		</p>
+		{%if student.get_sgcard%}
+		<ul class="thumbnails">
+			{%for sgcard in student.get_sgcard%}
+			<li class="span1">
+				<a class="thumbnail" href="/group/{{sgcard.group.url_number}}/"> <img src="{{sgcard.group.logo}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			他还没有加入小组
+		</p>
+		{%endif%}
+		<hr>
+		<p align="center">
+			-----加入的社团------
+		</p>
+		{%if student.corporation_list%}
+		<ul class="thumbnails">
+			{%for corporation in student.corporation_list%}
+			<li class="span1">
+				<a class="thumbnail" href="/group/{{corporation.url_number}}/"> <img src="{{MEDIA_URL}}{{corporation.logo}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			他还没有加入社团
+		</p>
+		{%endif%}
+	</div>
+</div>
+{%endblock%}
+{%block otherscript%}
+<script type="text/javascript" src="{{STATIC_URL}}js/csrf.js"></script>
+
+<script type="text/javascript">
+$().ready(function(){
+	$('#cancle_watch').live('click',function cancle_watch () {
+		$.post("{%url accounts.views.cancle_watch_student student.url_number%}",
+		function () {
+			$('#outer').load(location.href+' #watch_button');
+		});
+	});
+	
+	$('#watch').live('click',function watch () {
+		$.post("{%url accounts.views.add_watch_student student.url_number%}",
+		function () {
+			$('#outer').load(location.href+' #watch_button');
+			
+		});
+	});
+	
+});
+</script>
+					
+
+{%endblock%}

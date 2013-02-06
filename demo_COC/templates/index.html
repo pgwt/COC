@@ -1,0 +1,197 @@
+{%extends "base.html"%}
+{%block title%}同校网{%endblock%}
+{%block othercss%}
+<style type="text/css">
+	.form-signin {
+		max-width: 300px;
+		padding: 19px 29px 29px;
+		margin: 0 auto 20px;
+		background-color: #fff;
+		border: 1px solid #e5e5e5;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+		-moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+		box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	}
+	.form-signin .form-signin-heading, .form-signin .checkbox {
+		margin-bottom: 10px;
+	}
+	.form-signin input[type="text"], .form-signin input[type="password"] {
+		font-size: 16px;
+		height: auto;
+		margin-bottom: 15px;
+		padding: 7px 9px;
+	}
+
+</style>
+{%endblock%}
+{%block nav%}
+<li>
+	<a href="/">广播</a>
+</li>
+<li>
+	<a href="/people/">个人主页</a>
+</li>
+<li>
+	<a href="/corporation/">社团</a>
+</li>
+<li>
+	<a href="/group/">小组</a>
+</li>
+<li>
+	<a href="/find/">发现</a>
+</li>
+{%endblock%}
+
+{%block container%}
+<form class="form-signin" method="post">
+	{% csrf_token %} <h2 class="form-signin-heading">登录</h2>
+	<input type="text" class="input-block-level" placeholder="Email address" name="login_email" id="id_login_email"/>
+	<input type="password" class="input-block-level" placeholder="Password" name="login_password" id="id_login_password"/>
+	<label class="checkbox">
+		<input type="checkbox" value="remember" name="remember_me" id="id_remember_me"/>
+		记住我 </label>
+	<button class="btn btn-large btn-success" type="submit" style="width:290px;height:44px;">
+		登录
+	</button>
+	<input name="login" type="hidden" />
+	<br>
+	</br>
+	<button class="btn btn-large btn-primary" data-toggle="modal" type="submit" data-target="#myModal" style="width:290px;height:44px;">
+		注册
+	</button>
+</form>
+{%endblock%}
+
+{%block otherbody%}
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="myModalLabel">注册</h3>
+	</div>
+	<div class="modal-body" style="
+	margin-left: 120px;">
+		<form class="span3" method="post">
+			{% csrf_token %}
+			<div id="warning">
+				<div class="controls span3 " style="margin:0px;">
+					<span style="color: red">*</span>
+					<span>邮箱：</span>
+					<input type="text" class="required" style="margin-bottom:20px;" placeholder="如：xxx@xx.com" id="id_email" name="email"/>
+				</div>
+			</div>
+			<div id="error">
+				<div class="controls span3" style="margin:0px;">
+					<span style="color: red">*</span>
+					<span>密码：</span>
+					<input type="password" class="selecttwo" style="margin-bottom:20px;" placeholder="6到15位" id="id_password" name="password"/>
+				</div>
+			</div>
+			<div id="r">
+				<div class="controls span3" style="margin:0px;">
+					<span style="color: red">*</span>
+					<span>确认密码：</span>
+					<input type="password" class="selecttwo" style="margin-bottom:20px;" placeholder="请确认密码" id="id_cpassword"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<span style="color: red">*</span>
+					<span>真实姓名：</span>
+					<input type="text" id="id_realname" name="realname" placeholder="请输入真实姓名"/>
+				</div>
+			</div>
+			<div class="control-group">
+				
+				<div class="controls">
+					<span style="color: red">*</span>
+					<span>性别：</span>&nbsp;
+					<input type="radio" name="gender" id="id_gender" value="男" checked>
+					男</input>&nbsp;&nbsp;
+					<input type="radio" name="gender" id="id_gender" value="女">
+					女</input>
+				</div>
+			</div>
+			<div>
+				<input name="signup" type="hidden" />
+				<button class="btn btn-large btn-primary check disabled" type="submit" style="width:220px;height:39px;" id="OK">
+					注册
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+{%endblock%}
+
+{%block otherscript%}
+<script type="text/javascript">
+	var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+	var mi = /^[A-Za-z0-9_]{6,15}$/;
+
+	$(document).ready(function() {
+		var dataValid1 = false;
+		var dataValid2 = false;
+		var dataValid3 = false;
+		$('#info').html('');
+		//然后将结果提示也设置为空；
+		$('#id_email').blur(function() {//对于required类的元素，如果失去焦点了，则....
+			var cur = $(this);
+			//获取当前元素
+			cur.next('span').remove();
+			//然后将错题提示的<span>给移走，不管他之前是什么；
+			if (!reg.test(cur.val())) {//判断如果输入为空；
+				$('#warning').addClass("control-group error");
+				cur.after('<span class="error alert  alert-error span3" style="width:170px;margin-left:0px;" >邮箱格式不正确</span>');
+				//则在输入框后添加错题提示信息；
+				$('.check').addClass("disabled");
+				dataValid1 = false;
+			} else {
+				dataValid = true;
+
+				$('#warning').removeClass("control-group error");
+				dataValid1 = true;
+				if (dataValid1 == true && dataValid2 == true && dataValid3 == true)
+					$('.check').removeClass("disabled");
+			}
+		});
+
+		$('.selecttwo').blur(function() {
+			var password = $('#id_password');
+			var cpassword = $('#id_cpassword');
+			$('#error').removeClass("control-group error");
+			password.next('span').remove();
+			$('#r').removeClass("control-group error");
+			cpassword.next('span').remove();
+
+			if (!mi.test(password.val())) {
+				$('#error').addClass("control-group error");
+				password.after('<span class="error alert alert-error span3" style="width:170px;margin-left:0px;" >密码必须超六位</span>');
+				$('#OK').addClass("disabled");
+				dataValid2 = false;
+			} else {
+
+				dataValid2 = true;
+				if (password.val() != cpassword.val()) {
+					$('#r').addClass("control-group error");
+					cpassword.after('<span class="error alert alert-error span3" style="width:170px;margin-left:0px;" id="differen_input">俩次输入密码不符合</span>');
+					$('#OK').addClass("disabled");
+					dataValid3 = false;
+
+				} else {
+					dataValid3 = true;
+					if (dataValid1 == true && dataValid2 == true && dataValid3 == true) {
+						$('#OK').removeClass("disabled");
+					}
+				}
+			}
+
+		});
+
+	}); 
+</script>
+
+{%endblock%}

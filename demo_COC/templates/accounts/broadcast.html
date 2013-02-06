@@ -1,0 +1,93 @@
+{%extends 'accounts/accounts_base.html'%}
+{%block leftspan6%}
+<h3>我的广播</small></h3>
+<hr>
+
+<form method="post">
+	{% csrf_token %}
+	<textarea class="span6 offset1" name="content"></textarea>
+	<button class="btn">
+	发布
+</button>
+</form>
+{%if current_user.get_event_list%}
+<div class="media">
+	{%for event in current_user.get_event_list%}
+	<div class="span6 media">
+		<hr>
+		<a class="pull-left span1" href="/people/{{event.user.url_number}}"> <img class="media-object" src="{{event.user.public_profile.face}}"> </a>
+		<div class="media-body">
+			<h4 class="media-heading">{{event.description}}</h4>
+		</div>
+	</div>
+	{%endfor%}
+</div>
+{%else%}
+<p>
+	没有广播
+</p>
+{%endif%}
+
+{%endblock%}
+{%block rightspan3%}
+<div class="row">
+
+	<div class="span3">
+		&nbsp;
+		<a href="/corporation/creat_coporation/" class="btn btn-block btn-primary">创建社团</a>
+		&nbsp;
+		<a href="/group/creat_group/" class="btn btn-block btn-success">创建小组</a>
+		<hr>
+		<p align="center">
+			-----关注的人------
+		</p>
+		{%if current_user.get_sscard.watched_students%}
+		<ul class="thumbnails">
+			{%for wstudent in current_user.get_sscard.watched_students%}
+			<li class="span1">
+				<a class="thumbnail" href="/people/{{wstudent.url_number}}/"> <img src="{{wstudent.public_profile.face}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			您还没有关注其他人
+		</p>
+		{%endif%}
+		<hr>
+		<p align="center">
+			-----加入的小队------
+		</p>
+		{%if current_user.get_sgcard%}
+		<ul class="thumbnails">
+			{%for sgcard in current_user.get_sgcard%}
+			<li class="span1">
+				<a class="thumbnail" href="/group/{{sgcard.group.url_number}}/"> <img src="{{sgcard.group.logo}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			您还没有加入小组
+		</p>
+		{%endif%}
+		<hr>
+		<p align="center">
+			-----加入的社团------
+		</p>
+		{%if current_user.corporation_list%}
+		<ul class="thumbnails">
+			{%for corporation in current_user.corporation_list%}
+			<li class="span1">
+				<a class="thumbnail" href="/group/{{corporation.url_number}}/"> <img src="{{MEDIA_URL}}{{corporation.logo}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			您还没有加入社团
+		</p>
+		{%endif%}
+	</div>
+</div>
+{%endblock%}

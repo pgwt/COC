@@ -1,0 +1,33 @@
+{%extends "accounts/people.html"%}
+{%block tab%}
+<li>
+	<a href="../">动态</a>
+</li>
+<li>
+	<a href="../profile/">资料</a>
+</li>
+<li class="active">
+	<a href="../corporation/">社团</a>
+</li>
+<li>
+	<a href="../group/">小组</a>
+</li>
+{%endblock%}
+{%block content%}
+{%if student.corporationlist%}
+<div class="media">
+	{%for corporation in sutdent.corporationlist%}
+	<div class="span6 media">
+		<hr>
+		<a class="pull-left span1" href="http://{{host}}/corporation/{{corporation.url_number}}/"> <img class="media-object" src="{{MEDIA_URL}}img/corporation/{{corporation.url_number}}.jpg"> </a>
+		<div class="media-body">
+			<h4 class="media-heading">{{corporation.name}}</h4>
+			创建于{{corporation.birthyear}}
+		</div>
+	</div>
+	{%endfor%}
+</div>
+{%else%}
+<h2>他还没有加入社团</h2>
+{%endif%}
+{%endblock%}

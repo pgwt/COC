@@ -1,0 +1,33 @@
+{%extends "base.html"%}
+{%block title%}小組{%endblock%}
+{%block nav%}
+<li>
+	<a href="/">广播</a>
+</li>
+<li>
+	<a href="/people/{{current_user.url_number}}/">个人主页</a>
+</li>
+<li>
+	<a href="/corporation/">社团</a>
+</li>
+<li>
+	<a href="/group/">小组</a>
+</li>
+<li>
+	<a href="/find/">发现</a>
+</li>
+{%endblock%}
+{%block container%}
+<div class="span9 offset1 well">
+	<div class="row">
+		<div class="span6">
+			{%block leftspan6%}
+			{%endblock%}
+		</div>
+		<div class="span3">
+			{%block rightspan3%}
+			{%endblock%}
+		</div>
+	</div>
+</div>
+{%endblock%}

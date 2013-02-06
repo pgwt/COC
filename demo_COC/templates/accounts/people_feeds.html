@@ -1,0 +1,34 @@
+{%extends "accounts/people.html"%}
+
+{%block tab%}
+<li class="active">
+	<a href="../feeds/">动态</a>
+</li>
+<li>
+	<a href="../profile/">资料</a>
+</li>
+<li>
+	<a href="../corporation/">社团</a>
+</li>
+<li>
+	<a href="../group/">小组</a>
+</li>
+{%endblock%}
+{%block content%}
+{%if student.feeds%}
+<div class="media">
+	{%for feed in student.feeds%}
+	<div class="span6 media">
+		<hr>
+		<a class="pull-left span1" href="/people/{{student.url_number}}/"> <img class="media-object" src="{{student.public_profile.face}}"> </a>
+		<div class="media-body">
+			<small>{{feed.creat_time}}</small>
+			<h4 class="media-heading">{{feed.content}}</h4>
+		</div>
+	</div>
+	{%endfor%}
+</div>
+{%else%}
+<h2>没有关于他的消息</h2>
+{%endif%}
+{%endblock%}
