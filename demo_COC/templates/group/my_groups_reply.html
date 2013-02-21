@@ -15,7 +15,7 @@
 	<thead>
 		<tr>
 			<td>话题</td>
-			<td>回应</td>
+			<td>回应/阅</td>
 			<td>时间</td>
 			<td>小组</td>
 		</tr>
@@ -23,9 +23,9 @@
 	<tbody>
 		{%for topic in current_user.grouptopics_reply%}
 		<tr>
-			<td><a href="/group/topic/{{topic.url_number}}/">{{topic.title}}</a></td>
-			<td>{{topic.replys}}</td>
-			<td>{{topic.update_time}}</td>
+			<td><a href="/group/{{topic.creator.group.url_number}}/topic/{{topic.url_number}}/">{{topic.title}}</a></td>
+			<td>{{topic.replys}}/{{topic.clicks}}</td>
+			<td><small>{{topic.update_time|date:"Y-m-d H:i:s"}}</small></td>
 			<td><a href="/group/{{topic.creator.group.url_number}}/">{{topic.creator.group.name}}</a></td>
 		</tr>
 		{%endfor%}

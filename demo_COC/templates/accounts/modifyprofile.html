@@ -31,7 +31,7 @@
 				<div class="control-group">
 					<label class="control-label" for="id_birthday" >生日</label>
 					<div class="controls date">
-						<input type="text" id="id_birthday" name="birthday" value="{{current_user.public_profile.birthday}}"/>
+						<input type="text" id="id_birthday" name="birthday" value="{{current_user.public_profile.birthday|date:"m/d/Y"}}"/>
 					</div>
 				</div>
 

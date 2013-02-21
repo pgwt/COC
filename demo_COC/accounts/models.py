@@ -39,20 +39,23 @@ class Student(User):
     def get_sgcard(self):
         return S_G_Card.objects(user=self, is_active=True)
     
-    def get_event_list(self):
+    def get_sccard(self):
+        return S_C_Card.objects(user=self,is_active=True)
+    
+    def get_event_list(self):#
         return Event.objects(user=self).get().event
     
-    def grouptopics_creat(self):
+    def grouptopics_creat(self):#我创建的话题
         from forum.models import Topic
         return Topic.objects(creator__in=S_G_Card.objects(user=self))
     
-    def grouptopics(self):
+    def grouptopics(self):#我关注的小组的话题
         from forum.models import Topic
         return Topic.objects(creator__in=S_G_Card.objects(group__in=self.get_sgcard().scalar('group')))
         
-    def grouptopics_reply(self):
+    def grouptopics_reply(self):#我回复的话题
         from forum.models import Post
-        return Post.objects(author=self).scalar('topic')
+        return Post.objects(author=self).distinct('topic')
     
     
 from corporation.models import Corporation
@@ -81,10 +84,11 @@ class S_C_Card(Document):
     permissions = fields.ListField(fields.DictField())
     corporation = fields.ReferenceField(Corporation, reverse_delete_rule=CASCADE)
     creat_time = fields.DateTimeField()
+    is_active = fields.BooleanField()
     
     def __init__(self):
         import datetime
-        self.permissions = {'forum':100, 'activity':000, 'poster':000}
+        self.permissions = {'forum':100, 'activity':000, 'poster':000}#增删改权限
         self.creat_time = datetime.datetime.now()
 
 class Event(Document):
@@ -101,7 +105,7 @@ class S_G_Card(Document):
     group = fields.ReferenceField(Group, reverse_delete_rule=CASCADE)
     position = fields.StringField()
     creat_time = fields.DateTimeField()
-    is_active = fields.BooleanField()
+    is_active = fields.BooleanField()#保证退出小组之后话题还在
     
     def description(self):
         return self.user.public_profile.realname + "于"+str(self.creat_time)+"加入" + self.group.name

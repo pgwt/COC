@@ -22,7 +22,7 @@
 		<hr>
 		<a class="pull-left span1" href="/people/{{student.url_number}}/"> <img class="media-object" src="{{student.public_profile.face}}"> </a>
 		<div class="media-body">
-			<small>{{feed.creat_time}}</small>
+			<small>{{feed.creat_time|date:"Y-m-d H:i:s"}}</small>
 			<h4 class="media-heading">{{feed.content}}</h4>
 		</div>
 	</div>

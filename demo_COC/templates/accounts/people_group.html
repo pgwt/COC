@@ -17,12 +17,11 @@
 {%if student.get_sgcard%}
 <div class="media">
 	{%for sgcard in student.get_sgcard%}
-	<div class="span6 media">
-		<hr>
+	<div class="span3 media">
 		<a class="pull-left span1" href="/group/{{sgcard.group.url_number}}/"> <img class="media-object" src="{{sgcard.group.logo}}"> </a>
 		<div class="media-body">
 			<h4 class="media-heading">{{sgcard.group.name}}</h4>
-			创建于{{sgcard.group.birthday}}
+			<p>({{sgcard.group.get_member_list.count}})</p>
 		</div>
 	</div>
 	{%endfor%}
