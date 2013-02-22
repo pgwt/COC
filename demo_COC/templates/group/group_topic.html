@@ -6,7 +6,7 @@
 	<a class="pull-left span1" href="/people/{{topic.creator.user.url_number}}/"> <img class="media-object" src="{{topic.creator.user.public_profile.face}}"> </a>
 	<div class="media-body">
 		<h3 class="media-heading">{{topic.title}}</h3>
-		<small>来自<a href="/people/{{topic.creator.user.url_number}}/">{{topic.creator.user.public_profile.realname}}</a>&nbsp;&nbsp;&nbsp;{{topic.creat_time|date:"Y-m-d H:i:s"}}</small>
+		来自<a href="/people/{{topic.creator.user.url_number}}/">{{topic.creator.user.public_profile.realname}}</a><small class="muted">&nbsp;&nbsp;&nbsp;{{topic.creat_time|date:"Y-m-d H:i:s"}}</small>
 		<hr>
 		<p>{{topic.content}}</p>
 	</div>
@@ -18,7 +18,8 @@
 		<hr>
 		<a class="pull-left span1" href="/people/{{post.author.url_number}}/"> <img class="media-object" src="{{post.author.public_profile.face}}"> </a>
 		<div class="media-body">
-			<a class="media-heading" href="/people/{{post.author.url_number}}/">{{post.author.public_profile.realname}}</a><small>&nbsp;&nbsp;&nbsp;{{post.creat_time|date:"Y-m-d H:i:s"}}</small>
+			<a class="media-heading" href="/people/{{post.author.url_number}}/">{{post.author.public_profile.realname}}</a>
+			<span class="muted" style="float: right;height: 16px;"><small>{{post.creat_time|date:"Y-m-d H:i:s"}}</small></span>
 			<p>{{post.content}}</p>
 		</div>
 	</div>

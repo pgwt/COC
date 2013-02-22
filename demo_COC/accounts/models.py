@@ -108,7 +108,7 @@ class S_G_Card(Document):
     is_active = fields.BooleanField()#保证退出小组之后话题还在
     
     def description(self):
-        return self.user.public_profile.realname + "于"+str(self.creat_time)+"加入" + self.group.name
+        return self.user.public_profile.realname + "加入了" + self.group.name
 
 signals.post_save.connect(Event.event_post_save, sender=S_G_Card)
     

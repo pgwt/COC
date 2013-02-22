@@ -1,46 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-
-		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-		Remove this if you use the .htaccess -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-		<title>creat_corporation</title>
-		<meta name="description" content="" />
-		<meta name="author" content="lcy" />
-
-		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
-
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-	</head>
-
-	<body>
-		<div>
-			<header>
-				<h1>creat_corporation</h1>
-			</header>
-			<nav>
-				<p>
-					<a href="/">Home</a>
-				</p>
-				<p>
-					<a href="/contact">Contact</a>
-				</p>
-			</nav>
-
-			<div>
-
+{%extends "group/group_base.html"%}
+{%block othercss%}
+<link href="{{STATIC_URL}}css/bootstrap-fileupload.css" rel="stylesheet"/>
+{%endblock%}
+{%block container%}
+<div class="span9 offset1 well">
+	<form class="form-horizontal" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<h3 class="success"  style="color:#3366FF;margin-left:170px;"><strong>创建社团</strong></h3>
+		<div class="row">
+			<div class="span3">
+				<div class="fileupload fileupload-new" data-provides="fileupload">
+					<div class="fileupload-preview thumbnail span3" style="height: 260px"></div>
+					<div class="span3">
+						<span class="btn btn-file"><span class="fileupload-new">选择图片</span><span class="fileupload-exists">换一张</span>
+							<input type="file" name="logo" id="id_logo"/>
+						</span>
+						<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">删除</a>
+					</div>
+				</div>
 			</div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="id_name">社团名称</label>
+					<div class="controls">
+						<input type="text" id="id_name" name="name" placeholder="请输入小组名称"/>
+					</div>
+				</div>
 
-			<footer>
-				<p>
-					&copy; Copyright  by lcy
-				</p>
-			</footer>
+				<div class="control-group">
+					<label class="control-label" for="id_introduction" >社团简介</label>
+					<div class="controls date">
+						<input type="text" id="id_introduction" name="introduction"/>
+					</div>
+				</div>
+				
+				
+				<div class="control-group">
+					<div class="controls">
+						<button class="btn btn-large btn-success" style="margin-left:0px; width: 140px;" type="submit">
+							保存
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
-	</body>
-</html>
+	</form>
+</div>
+{%endblock%}
+{%block otherscript%}
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-fileupload.js"></script>
+{%endblock%}
