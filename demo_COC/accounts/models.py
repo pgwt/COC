@@ -39,6 +39,12 @@ class Student(User):
     def get_sgcard(self):
         return S_G_Card.objects(user=self, is_active=True)
     
+    def get_admin_group(self):
+        return S_G_Card.objects(user=self, is_active=True,is_admin=True)
+    
+    def get_in_group(self):
+        return S_G_Card.objects(user=self, is_active=True,is_admin=False)
+    
     def get_sccard(self):
         return S_C_Card.objects(user=self,is_active=True)
     
@@ -101,11 +107,11 @@ class Event(Document):
     
 class S_G_Card(Document):
     user = fields.ReferenceField(Student)
-    permissions = fields.ListField(fields.DictField())
     group = fields.ReferenceField(Group, reverse_delete_rule=CASCADE)
     position = fields.StringField()
     creat_time = fields.DateTimeField()
     is_active = fields.BooleanField()#保证退出小组之后话题还在
+    is_admin = fields.BooleanField()#是否是小组管理员
     
     def description(self):
         return self.user.public_profile.realname + "加入了" + self.group.name

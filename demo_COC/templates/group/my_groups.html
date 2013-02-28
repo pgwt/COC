@@ -31,11 +31,30 @@
 
 	<div class="span3">
 		<p align="center">
-			-----加入的小队------
+			-----管理的小组-----
 		</p>
-		{%if current_user.get_sgcard%}
+		{%if current_user.get_admin_group%}
 		<ul class="thumbnails">
-			{%for sgcard in current_user.get_sgcard%}
+			{%for sgcard in current_user.get_admin_group%}
+			<li class="span1">
+				<a class="thumbnail" href="/group/{{sgcard.group.url_number}}/"> <img src="{{sgcard.group.logo}}"> </a>
+			</li>
+			{%endfor%}
+		</ul>
+		{%else%}
+		<p>
+			没有需要您管理的小组
+		</p>
+		{%endif%}
+		
+	</div>
+	<div class="span3">
+		<p align="center">
+			-----参加的小组------
+		</p>
+		{%if current_user.get_in_group%}
+		<ul class="thumbnails">
+			{%for sgcard in current_user.get_in_group%}
 			<li class="span1">
 				<a class="thumbnail" href="/group/{{sgcard.group.url_number}}/"> <img src="{{sgcard.group.logo}}"> </a>
 			</li>
@@ -48,5 +67,8 @@
 		{%endif%}
 		
 	</div>
+	
 </div>
+{%endblock%}
+{%block otherscript%}
 {%endblock%}

@@ -9,6 +9,17 @@
 		来自<a href="/people/{{topic.creator.user.url_number}}/">{{topic.creator.user.public_profile.realname}}</a><small class="muted">&nbsp;&nbsp;&nbsp;{{topic.creat_time|date:"Y-m-d H:i:s"}}</small>
 		<hr>
 		<p>{{topic.content}}</p>
+		<hr>
+		<p class="text-right">
+		{%ifequal current_user topic.creator.user%}
+		- <span><a>修改</a></span>
+		{%endifequal%}
+		{%if current_user in group.get_admin_list%}
+		 - <span><a>置顶</a></span> - <span><a>禁止回应</a></span> - <span><a>删除</a></span>
+		{%endif%}
+		
+		
+		</p>
 	</div>
 </div>
 <hr>
@@ -31,59 +42,19 @@
 </div>
 
 
-{%if current_user in topic.creator.group.get_member_list%}
-<div class="span3 offset2">
-	
+
+<div id="reply" class="span3 offset2">
+{%if current_user in topic.creator.group.get_user_list%}
 <form method="post">
 	{% csrf_token %}
 	{{form.as_p}}
 	<button type="submit" class="btn btn-primary">回应</button>
 </form>
-</div>
 {%else%}
-<div class="span3 offset2">
-	
 <p>加入小组才能回应</p>
-</div>
 {%endif%}
-
-{%endblock%}
-
-{%block rightspan3%}
-<div class="row">
-	<div class="span3">
-		<div class="thumbnail">
-			<a href="/group/{{group.url_number}}/"><img src="{{group.logo}}"></a>
-			
-		</div>
-	</div>
-
-	<div class="span3">
-		<hr>
-		<p align="center">
-			-----小组成员------
-		</p>
-		<div id="member_list">
-			{%if group.get_member_list%}
-			<ul class="thumbnails">
-				{%for user in group.get_member_list%}
-				<li class="span1">
-					<a class="thumbnail" href="/people/{{user.url_number}}/"> <img src="{{user.public_profile.face}}"> </a>
-				</li>
-				{%endfor%}
-			</ul>
-			{%else%}
-			<p>
-				无
-			</p>
-			{%endif%}
-		</div>
-	</div>
 </div>
-{%endblock%}
-{%block otherscript%}
-<script type="text/javascript" src="{{STATIC_URL}}js/csrf.js"></script>
-
 
 
 {%endblock%}
+

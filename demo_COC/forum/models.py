@@ -24,7 +24,24 @@ class Topic(Document):
     
     def replys(self):
         return Post.objects(topic=self).count()
+    
+    def top(self):#置顶
+        self.is_top = True
+        
+    def untop(self):
+        self.is_top = False
+        
+    def lock(self):#禁止回复
+        self.is_locked = True
+        
+    def unlock(self):
+        self.is_locked = False
+        
+    def inactive(self):#设为不可见
+        self.is_active = False
 
+    def active(self):#设为可见
+        self.is_active = True
 
 class Post(Document):
     content = fields.StringField(verbose_name=u'内容')
@@ -34,5 +51,9 @@ class Post(Document):
     is_active = fields.BooleanField(verbose_name=u'可见')
     topic = fields.ReferenceField(Topic, reverse_delete_rule=CASCADE)
     
-    
+    def inactive(self):#设为不可见
+        self.is_active = False
+        
+    def active(self):#设为可见
+        self.is_active = True
     

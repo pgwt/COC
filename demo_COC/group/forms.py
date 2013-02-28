@@ -8,3 +8,6 @@ class CreatGroupForm(forms.Form):
     # school = fields.StringField()
     grouptype = forms.CharField()  # 小组类型，是否为私密小组
     
+class ModifyGroupForm(forms.Form):
+    name = forms.CharField()
+    introduction = forms.CharField()

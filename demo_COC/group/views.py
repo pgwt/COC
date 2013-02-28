@@ -7,7 +7,7 @@ from django.core.context_processors import csrf
 from demo_COC.settings import STATIC_URL, MEDIA_ROOT, MEDIA_URL
 from django.http import HttpResponseRedirect
 from django.contrib.auth import *
-from forms import CreatGroupForm
+from forms import CreatGroupForm,ModifyGroupForm
 from models import Group
 from forum.models import Topic, Post
 from forum.forms import NewTopicForm, NewPostForm
@@ -42,18 +42,18 @@ def creat_group(request):
                 filepath = '%s/%s' % (path, filename)
                 # 获得图像的宽度和高度
                 width, height = img.size
-                # 计算高宽�?
+                # 计算宽高
                 ratio = 1.0 * height / width
                 # 计算新的高度
                 new_height = int(260 * ratio)
                 new_size = (260, new_height)
-                # 插�?缩放图像�?
+                # 缩放图像
                 out = img.resize(new_size, Image.ANTIALIAS)
                 out.save(MEDIA_ROOT + filepath)
                 group.logo = MEDIA_URL + filepath
                 
             group.save()
-            sgcard = S_G_Card(user=request.user, group=group, is_active=True, creat_time=datetime.datetime.now())
+            sgcard = S_G_Card(user=request.user, group=group, is_active=True, is_admin=True,creat_time=datetime.datetime.now())
             sgcard.save()
             return HttpResponseRedirect('/group/' + str(url_number) + '/')
         
@@ -93,10 +93,16 @@ def group(request, gurl_number):
     
 def entergroup(request, url_number):
     group = Group.objects(url_number=url_number).get()
-    if S_G_Card.objects(user=request.user, group=group):
-        S_G_Card.objects(user=request.user, group=group).update(set__is_active=True, set__creat_time=datetime.datetime.now())
+    if S_G_Card.objects(group=group, is_active=True,is_admin=False).scalar('user') or S_G_Card.objects(group=group, is_active=True,is_admin=True).scalar('user'):
+        if S_G_Card.objects(user=request.user, group=group):
+            S_G_Card.objects(user=request.user, group=group).update(set__is_active=True, set__is_admin=False, set__creat_time=datetime.datetime.now())
+        else:
+            S_G_Card(user=request.user, group=group, is_active=True, is_admin=False,creat_time=datetime.datetime.now()).save()
     else:
-        S_G_Card(user=request.user, group=group, is_active=True, creat_time=datetime.datetime.now()).save()
+        if S_G_Card.objects(user=request.user, group=group):
+            S_G_Card.objects(user=request.user, group=group).update(set__is_active=True, set__is_admin=True,set__creat_time=datetime.datetime.now())
+        else:
+            S_G_Card(user=request.user, group=group, is_active=True,is_admin=True, creat_time=datetime.datetime.now()).save()
     return HttpResponse('success')
     
 def quitgroup(request, url_number):
@@ -128,7 +134,7 @@ def showtopic(request, gurl_number, turl_number):
         
     else:
         form = NewPostForm()
-        return render_to_response('group/group_topic.html', {'group':group, 'form':form, 'topic':topic, 'STATIC_URL':STATIC_URL, 'current_user':request.user}, context_instance=RequestContext(request))
+        return render_to_response('group/group_topic.html', {'group':group, 'current_user':request.user, 'form':form, 'topic':topic, 'STATIC_URL':STATIC_URL}, context_instance=RequestContext(request))
 
     
 def my_groups_creat(request):
@@ -140,5 +146,82 @@ def my_groups_news(request):
 def my_groups_reply(request):
     return render_to_response('group/my_groups_reply.html', {'STATIC_URL':STATIC_URL, 'current_user':request.user}, context_instance=RequestContext(request))
   
+def ask_for_admin(request,url_number):
+    group = Group.objects(url_number=url_number).get()
     
+    if not S_G_Card.objects(group=group, is_active=True,is_admin=True).scalar('user'):
+        S_G_Card.objects(user=request.user, group=group, is_active=True).update(set__is_admin=True)
+        
+    return HttpResponse('success')
                 
+                
+def group_manage_edit(request,url_number):
+    group = Group.objects(url_number=url_number).get()
+    if request.method == "POST":
+        form = ModifyGroupForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            introduction = form.cleaned_data['introduction']
+            group.update(set__name=name, set__introduction=introduction)
+            if request.FILES:
+                path = 'img/group/' + str(url_number)
+                if not os.path.exists(MEDIA_ROOT + path):
+                    os.makedirs(MEDIA_ROOT + path)
+                
+                img = Image.open(request.FILES['logo'])
+                if img.mode == 'RGB':
+                    filename = 'logo.jpg'
+                elif img.mode == 'P':
+                    filename = 'logo.png'
+                filepath = '%s/%s' % (path, filename)
+                # 获得图像的宽度和高度
+                width, height = img.size
+                # 计算宽高
+                ratio = 1.0 * height / width
+                # 计算新的高度
+                new_height = int(260 * ratio)
+                new_size = (260, new_height)
+                # 缩放图像
+                out = img.resize(new_size, Image.ANTIALIAS)
+                out.save(MEDIA_ROOT + filepath)
+                group.logo = MEDIA_URL + filepath
+                
+            group.save()
+            return HttpResponseRedirect('/group/' + str(url_number) + '/')
+    else:
+        form = ModifyGroupForm()
+        return render_to_response('group/group_manage_edit.html', {'group':group, 'STATIC_URL':STATIC_URL, 'current_user':request.user}, context_instance=RequestContext(request))
+  
+def group_manage_members(request,url_number):
+    group = Group.objects(url_number=url_number).get()
+    return render_to_response('group/group_manage_members.html', {'group':group, 'STATIC_URL':STATIC_URL, 'current_user':request.user}, context_instance=RequestContext(request))
+  
+def group_manage_advance(request,url_number):
+    group = Group.objects(url_number=url_number).get()
+    return render_to_response('group/group_manage_advance.html', {'group':group, 'STATIC_URL':STATIC_URL, 'current_user':request.user}, context_instance=RequestContext(request))
+  
+  
+def demote(request,group_url_number,user_url_number):
+    from accounts.models import Student
+    group = Group.objects(url_number=group_url_number).get()
+    user = Student.objects(url_number=user_url_number).get()
+    S_G_Card.objects(group=group,user=user).update(set__is_admin=False)
+    return HttpResponse('success')
+    
+    
+def promote(request,group_url_number,user_url_number):
+    from accounts.models import Student
+    group = Group.objects(url_number=group_url_number).get()
+    user = Student.objects(url_number=user_url_number).get()
+    S_G_Card.objects(group=group,user=user).update(set__is_admin=True)
+    return HttpResponse('success')
+    
+def kick_out(request,group_url_number,user_url_number):
+    from accounts.models import Student
+    group = Group.objects(url_number=group_url_number).get()
+    user = Student.objects(url_number=user_url_number).get()
+    S_G_Card.objects(group=group,user=user).update(set__is_active=False)
+    return HttpResponse('success')
+    
+    
+    
