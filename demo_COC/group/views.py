@@ -93,21 +93,12 @@ def group(request, gurl_number):
     
 def entergroup(request, url_number):
     group = Group.objects(url_number=url_number).get()
-    if S_G_Card.objects(group=group, is_active=True,is_admin=False).scalar('user') or S_G_Card.objects(group=group, is_active=True,is_admin=True).scalar('user'):
-        if S_G_Card.objects(user=request.user, group=group):
-            S_G_Card.objects(user=request.user, group=group).update(set__is_active=True, set__is_admin=False, set__creat_time=datetime.datetime.now())
-        else:
-            S_G_Card(user=request.user, group=group, is_active=True, is_admin=False,creat_time=datetime.datetime.now()).save()
-    else:
-        if S_G_Card.objects(user=request.user, group=group):
-            S_G_Card.objects(user=request.user, group=group).update(set__is_active=True, set__is_admin=True,set__creat_time=datetime.datetime.now())
-        else:
-            S_G_Card(user=request.user, group=group, is_active=True,is_admin=True, creat_time=datetime.datetime.now()).save()
+    group.entergroup(request.user)
     return HttpResponse('success')
     
 def quitgroup(request, url_number):
     group = Group.objects(url_number=url_number).get()
-    S_G_Card.objects(user=request.user, group=group, is_active=True).update(set__is_active=False)
+    group.quitgroup(request.user)
     return HttpResponse('success')
     
     
@@ -148,10 +139,7 @@ def my_groups_reply(request):
   
 def ask_for_admin(request,url_number):
     group = Group.objects(url_number=url_number).get()
-    
-    if not S_G_Card.objects(group=group, is_active=True,is_admin=True).scalar('user'):
-        S_G_Card.objects(user=request.user, group=group, is_active=True).update(set__is_admin=True)
-        
+    group.ask_for_admin(request.user)
     return HttpResponse('success')
                 
                 

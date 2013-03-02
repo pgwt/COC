@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 from mongoengine import Document, fields
+import datetime
 # Create your models here.
 class Group(Document):
     url_number = fields.IntField()
@@ -53,3 +54,28 @@ class Group(Document):
         from accounts.models import S_G_Card
         user = Student.objects(url_number=user_url_number).get()
         S_G_Card.objects(group=self,user=user).update(set__is_active=False)
+        
+    def ask_for_admin(self,user):
+        from accounts.models import S_G_Card
+        if not S_G_Card.objects(group=self, is_active=True,is_admin=True).scalar('user'):
+            S_G_Card.objects(user=user, group=self, is_active=True).update(set__is_admin=True)
+            
+    
+    def entergroup(self, user):
+        from accounts.models import S_G_Card
+        if S_G_Card.objects(group=self, is_active=True,is_admin=False).scalar('user') or S_G_Card.objects(group=self, is_active=True,is_admin=True).scalar('user'):
+            if S_G_Card.objects(user=user, group=self):
+                S_G_Card.objects(user=user, group=self).update(set__is_active=True, set__is_admin=False, set__creat_time=datetime.datetime.now())
+            else:
+                S_G_Card(user=user, group=self, is_active=True, is_admin=False,creat_time=datetime.datetime.now()).save()
+        else:
+            if S_G_Card.objects(user=user, group=self):
+                S_G_Card.objects(user=user, group=self).update(set__is_active=True, set__is_admin=True,set__creat_time=datetime.datetime.now())
+            else:
+                S_G_Card(user=user, group=self, is_active=True,is_admin=True, creat_time=datetime.datetime.now()).save()
+        
+        
+    def quitgroup(self, user):
+        from accounts.models import S_G_Card
+        S_G_Card.objects(user=user, group=self, is_active=True).update(set__is_active=False)
+        
