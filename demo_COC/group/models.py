@@ -35,4 +35,21 @@ class Group(Document):
         from accounts.models import S_G_Card
         return S_G_Card.objects(group=self, is_active=True).scalar('user')
         
+    def demote(self,user_url_number):
+        from accounts.models import Student
+        from accounts.models import S_G_Card
+        user = Student.objects(url_number=user_url_number).get()
+        S_G_Card.objects(group=self,user=user).update(set__is_admin=False)
+    
+    
+    def promote(self,user_url_number):
+        from accounts.models import Student
+        from accounts.models import S_G_Card
+        user = Student.objects(url_number=user_url_number).get()
+        S_G_Card.objects(group=self,user=user).update(set__is_admin=True)
         
+    def kick_out(self,user_url_number):
+        from accounts.models import Student
+        from accounts.models import S_G_Card
+        user = Student.objects(url_number=user_url_number).get()
+        S_G_Card.objects(group=self,user=user).update(set__is_active=False)

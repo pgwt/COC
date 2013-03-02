@@ -86,16 +86,12 @@ class S_S_Card(Document):
 
 class S_C_Card(Document):
     user = fields.ReferenceField(Student)
-    position = fields.StringField()
-    permissions = fields.ListField(fields.DictField())
+    department = fields.StringField()#部门
     corporation = fields.ReferenceField(Corporation, reverse_delete_rule=CASCADE)
-    creat_time = fields.DateTimeField()
+    creat_time = fields.DateTimeField()#入社时间
     is_active = fields.BooleanField()
+    is_admin = fields.BooleanField()#是否是社团管理员
     
-    def __init__(self):
-        import datetime
-        self.permissions = {'forum':100, 'activity':000, 'poster':000}#增删改权限
-        self.creat_time = datetime.datetime.now()
 
 class Event(Document):
     user = fields.ReferenceField(Student)
@@ -108,7 +104,6 @@ class Event(Document):
 class S_G_Card(Document):
     user = fields.ReferenceField(Student)
     group = fields.ReferenceField(Group, reverse_delete_rule=CASCADE)
-    position = fields.StringField()
     creat_time = fields.DateTimeField()
     is_active = fields.BooleanField()#保证退出小组之后话题还在
     is_admin = fields.BooleanField()#是否是小组管理员

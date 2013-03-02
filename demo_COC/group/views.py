@@ -202,25 +202,19 @@ def group_manage_advance(request,url_number):
   
   
 def demote(request,group_url_number,user_url_number):
-    from accounts.models import Student
     group = Group.objects(url_number=group_url_number).get()
-    user = Student.objects(url_number=user_url_number).get()
-    S_G_Card.objects(group=group,user=user).update(set__is_admin=False)
+    group.demote(user_url_number)
     return HttpResponse('success')
     
     
 def promote(request,group_url_number,user_url_number):
-    from accounts.models import Student
     group = Group.objects(url_number=group_url_number).get()
-    user = Student.objects(url_number=user_url_number).get()
-    S_G_Card.objects(group=group,user=user).update(set__is_admin=True)
+    group.promote(user_url_number)
     return HttpResponse('success')
     
 def kick_out(request,group_url_number,user_url_number):
-    from accounts.models import Student
     group = Group.objects(url_number=group_url_number).get()
-    user = Student.objects(url_number=user_url_number).get()
-    S_G_Card.objects(group=group,user=user).update(set__is_active=False)
+    group.kick_out(user_url_number)
     return HttpResponse('success')
     
     
