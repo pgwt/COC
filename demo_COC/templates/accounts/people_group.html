@@ -21,7 +21,7 @@
 		<a class="pull-left span1" href="/group/{{sgcard.group.url_number}}/"> <img class="media-object" src="{{sgcard.group.logo}}"> </a>
 		<div class="media-body">
 			<h4 class="media-heading">{{sgcard.group.name}}</h4>
-			<p>({{sgcard.group.get_member_list.count}})</p>
+			<p>{{sgcard.group.get_user_list.count}}个成员</p>
 		</div>
 	</li>
 	{%endfor%}
