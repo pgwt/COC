@@ -46,13 +46,10 @@ def indexsignup(request):
             
 @login_required(login_url='/')            
 def signup_profile(request):
-    sessiondata = MongoSession.objects.get(pk=request.session.session_key).get_decoded()
-    current_user = Student.objects(id=sessiondata['_auth_user_id']).get()
+    current_user = request.user
     if request.method == 'POST':
         form = AccountsModifyProfileForm(request.POST)
         if form.is_valid():
-            
-            
             realname = form.cleaned_data['realname']
             birthday = form.cleaned_data['birthday']
             public_profile = current_user.public_profile
@@ -70,12 +67,12 @@ def signup_profile(request):
                 filepath = '%s/%s' % (path, filename)
                 # 获得图像的宽度和高度
                 width, height = img.size
-                # 计算高宽�?
+                # 计算高宽
                 ratio = 1.0 * height / width
                 # 计算新的高度
                 new_height = int(260 * ratio)
                 new_size = (260, new_height)
-                # 插�?缩放图像�?
+                # 缩放图像
                 out = img.resize(new_size, Image.ANTIALIAS)
                 out.save(MEDIA_ROOT + filepath)
                 public_profile.face = MEDIA_URL + filepath
@@ -112,9 +109,8 @@ def indexlogin(request):
 
 def index(request):
     if request.session.session_key:
-        sessiondata = MongoSession.objects.get(pk=request.session.session_key).get_decoded()
-        if sessiondata:
-            current_user = Student.objects(id=sessiondata['_auth_user_id']).get()
+        current_user = request.user
+        if current_user.is_authenticated():
             if request.method == 'POST':
                 form = NewFeedForm(request.POST)
                 if form.is_valid():
@@ -133,7 +129,6 @@ def index(request):
                 if 'login' in request.POST:
                     return indexlogin(request)
                 elif 'signup' in request.POST:
-                    
                     return indexsignup(request)
             
             else:
@@ -157,8 +152,7 @@ def index(request):
     
 @login_required(login_url='/') 
 def profile(request):
-    sessiondata = MongoSession.objects.get(pk=request.session.session_key).get_decoded()
-    current_user = Student.objects(id=sessiondata['_auth_user_id']).get()  # 从session获得当前用户
+    current_user = request.user
     if request.method == 'POST':
         form = AccountsModifyProfileForm(request.POST)
         if form.is_valid():
